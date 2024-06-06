@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Últimos datos raspados</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+
+<div class="container">
+    <h1 class="my-5">Datos extraídos</h1>
+
+    <!-- Botón flotante para volver a index.html -->
+    <a th:href="@{/}" class="btn btn-primary btn-floating" style="position: fixed; left: 20px; top: 20px;">
+        Volver a Index
+    </a>
+
+    <table class="table" style="margin-top: 70px;">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Fecha y hora</th>
+                <th scope="col">Temperatura (°C)</th>
+                <th scope="col">Precipitación (mm)</th>
+                <th scope="col">Fecha y hora de extracción</th>
+                <th scope="col">Datos de previsión</th>
+                <th scope="col">Fuente</th> <!-- Nuevo campo para la URL -->
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="tiempo : ${ultimosDatos}" th:if="${not #lists.isEmpty(ultimosDatos)}">
+                <td th:text="${#temporals.format(tiempo.fechaHora, 'dd/MM/yyyy HH:mm')}"></td>
+                <td th:text="${tiempo.temperatura != null ? tiempo.temperatura + '°C' : 'No disponible'}"></td>
+                <td th:text="${tiempo.precipitaciones != null ? tiempo.precipitaciones + 'mm' : 'No disponible'}"></td>
+                <td th:text="${#temporals.format(tiempo.fechaHoraExtraccion, 'dd/MM/yyyy HH:mm')}"></td>
+                <td th:text="${tiempo.datosPrevision ? 'Dato Real' : 'Previsión'}"></td>
+                <td>
+                    <!-- Añadir el enlace correspondiente a cada fuente de datos -->
+                    <a th:if="${tiempo.url == 'https://www.aemet.es/es/eltiempo/observacion/ultimosdatos?k=mur&l=7178I&w=0&datos=det&x=h24&f=temperatura'}" th:href="@{https://www.aemet.es/es/eltiempo/observacion/ultimosdatos?k=mur&l=7178I&w=0&datos=det&x=h24&f=temperatura}">Datos reales</a>
+                    <a th:if="${tiempo.url == 'https://www.aemet.es/es/eltiempo/prediccion/municipios/horas/tabla/murcia-id30030'}" th:href="@{https://www.aemet.es/es/eltiempo/prediccion/municipios/horas/tabla/murcia-id30030}">Previsiones AEMET</a>
+                    <a th:if="${tiempo.url == 'https://www.meteosat.com/tiempo/murcia/'}" th:href="@{https://www.meteosat.com/tiempo/murcia/}">Previsiones Meteosat</a>
+                    <a th:if="${tiempo.url == 'https://www.eltiempo.es/murcia.html?v=por_hora'}" th:href="@{https://www.eltiempo.es/murcia.html?v=por_hora}">Previsiones Tiempo.es</a>
+                    <a th:if="${tiempo.url == 'https://weather.com/es-ES/tiempo/horario/l/447fdb4c3a431d2dbe0b775a7ab09b35ce39cee060e4cc5c9bb4d04e0dc88b36'}" th:href="@{https://weather.com/es-ES/tiempo/horario/l/447fdb4c3a431d2dbe0b775a7ab09b35ce39cee060e4cc5c9bb4d04e0dc88b36}">Previsiones weather</a>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(ultimosDatos)}">
+                <td colspan="6" class="text-center">No hay datos disponibles</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>

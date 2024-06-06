@@ -1,0 +1,9 @@
+CREATE TABLE Tiempo (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    fecha_hora DATETIME,
+    temperatura DOUBLE,
+    precipitaciones DOUBLE,
+    url VARCHAR(255),
+    fecha_hora_extraccion DATETIME,
+    datos_prevision BOOLEAN
+);

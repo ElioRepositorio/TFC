@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Meteo Scraper</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Estilo para el contenedor principal */
+        .main-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        
+        /* Estilo para el contenedor de contenido */
+        .content-container {
+            text-align: center;
+        }
+
+        /* Estilo para el título */
+        h1 {
+            font-size: 4em; /* Aumenta el tamaño del título */
+            margin-bottom: 30px; /* Añade margen inferior */
+        }
+
+        /* Estilo para el logo */
+        .logo {
+            max-width: 200px; /* Aumenta el tamaño del logo */
+            margin-right: 30px;
+        }
+
+        /* Estilo para los botones */
+        .btn {
+            font-size: 1.5em; /* Aumenta el tamaño de la fuente de los botones */
+            margin-top: 10px;
+            width: 50%; /* Hace que el botón ocupe la mitad del ancho del contenedor */
+        }
+
+        /* Estilo para los placeholders */
+        .btn-placeholder {
+            color: #6c757d; /* Color del texto del placeholder */
+            pointer-events: none; /* Deshabilita la interacción del usuario */
+        }
+    </style>
+</head>
+<body>
+
+<div class="container-fluid vh-100 d-flex justify-content-center align-items-center">
+    <div class="d-flex align-items-center">
+        <img th:src="@{/LOGO.png}" alt="Logo" class="logo">
+        <div class="content-container">
+            <h1>MeteoScraper</h1> <!-- Cambia el título -->
+            <p style="font-size: 1.5em;">Selecciona una opción del menú para comenzar.</p> <!-- Aumenta el tamaño de la fuente del párrafo -->
+            <div class="d-grid gap-2">
+                <a class="btn btn-primary mx-auto" th:href="@{/ultimos_datos}">Lanzar el Scraper</a>
+                <a class="btn btn-primary mx-auto" th:href="@{/all_data}">Ver todos los datos</a>
+                <a class="btn btn-primary mx-auto" th:href="@{/resultadosBusqueda}">Busquedas</a>
+                <a class="btn btn-primary mx-auto" th:href="@{/graficos}">Gráficos</a> 
+                <a class="btn btn-primary mx-auto" th:href="@{/programador_tareas}">Programar Scraping</a>
+                <a class="btn btn-primary mx-auto" th:href="@{/eficiencia}">Ver Eficacia</a>
+                <form th:action="@{/logout}" method="post" class="d-inline">
+                    <button class="btn btn-outline-danger mx-auto" type="submit">Salir</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>

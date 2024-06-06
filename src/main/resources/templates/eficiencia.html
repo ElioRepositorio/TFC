@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Visualización de Datos</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .acierto {
+            background-color: #d4edda; /* Verde claro */
+        }
+        .diferencia-media {
+            background-color: #fff3cd; /* Naranja claro */
+        }
+        .diferencia-alta {
+            background-color: #f8d7da; /* Rojo claro */
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Visualización de Datos</h1>
+    
+    <!-- Botones para alternar entre las tablas -->
+    <div class="btn-group mb-3" role="group" aria-label="Basic example">
+        <button type="button" class="btn btn-primary" onclick="mostrarTabla('temperatura')">Temperatura</button>
+        <button type="button" class="btn btn-secondary" onclick="mostrarTabla('precipitacion')">Precipitaciones</button>
+    </div>
+    
+    <!-- Tabla de comparativa de temperatura -->
+    <div id="tablaTemperatura" style="display: none;">
+        <h2>Comparativa de Temperatura</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Fecha y Hora</th>
+                    <th>Datos Reales (AEMET)</th>
+                    <th>Previsiones (Meteosat)</th>
+                    <th>Previsiones (AEMET)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="dato : ${temperaturaEficiencia}">
+                    <td th:text="${dato[0]}"></td>
+                    <td th:text="${dato[1]}"></td>
+                    <td th:text="${dato[2]}"></td>
+                    <td th:text="${dato[3]}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Tabla de comparativa de precipitación -->
+    <div id="tablaPrecipitacion" style="display: none;">
+        <h2>Comparativa de Precipitación</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Fecha y Hora</th>
+                    <th>Datos Reales (AEMET)</th>
+                    <th>Previsiones (Meteosat)</th>
+                    <th>Previsiones (AEMET)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="dato : ${precipitacionesEficiencia}">
+                    <td th:text="${dato[0]}"></td>
+                    <td th:text="${dato[1]}"></td>
+                    <td th:text="${dato[2]}"></td>
+                    <td th:text="${dato[3]}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Botón flotante para volver a index.html -->
+<a href="/" class="btn btn-primary btn-floating" style="position: fixed; left: 20px; top: 20px;">
+    Volver a Index
+</a>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    // Función para alternar la visualización de las tablas
+    function mostrarTabla(tabla) {
+        document.getElementById('tablaTemperatura').style.display = 'none';
+        document.getElementById('tablaPrecipitacion').style.display = 'none';
+
+        if (tabla === 'temperatura') {
+            document.getElementById('tablaTemperatura').style.display = 'block';
+        } else if (tabla === 'precipitacion') {
+            document.getElementById('tablaPrecipitacion').style.display = 'block';
+        }
+    }
+
+    // Inicialmente mostrar la tabla de temperatura
+    mostrarTabla('temperatura');
+
+    // Función para calcular la diferencia y mostrarla en la tabla con colores
+    function calcularDiferencia() {
+        var rowsTemperatura = document.querySelectorAll("#tablaTemperatura tbody tr");
+        rowsTemperatura.forEach(function(row) {
+            var real = parseFloat(row.children[1].innerText);
+            var meteosat = parseFloat(row.children[2].innerText);
+            var aemet = parseFloat(row.children[3].innerText);
+            var diferenciaMeteosat = meteosat - real;
+            var diferenciaAemet = aemet - real;
+            row.children[2].innerText += " (" + (diferenciaMeteosat > 0 ? "+" : "") + diferenciaMeteosat.toFixed(1) + ")";
+            row.children[3].innerText += " (" + (diferenciaAemet > 0 ? "+" : "") + diferenciaAemet.toFixed(1) + ")";
+
+            // Agregar clases según la diferencia
+            if (Math.abs(diferenciaMeteosat) <= 1) {
+                row.children[2].classList.add('acierto');
+            } else if (Math.abs(diferenciaMeteosat) <= 3) {
+                row.children[2].classList.add('diferencia-media');
+            } else {
+                row.children[2].classList.add('diferencia-alta');
+            }
+
+            if (Math.abs(diferenciaAemet) <= 1) {
+                row.children[3].classList.add('acierto');
+            } else if (Math.abs(diferenciaAemet) <= 3) {
+                row.children[3].classList.add('diferencia-media');
+            } else {
+                row.children[3].classList.add('diferencia-alta');
+            }
+        });
+
+        var rowsPrecipitacion = document.querySelectorAll("#tablaPrecipitacion tbody tr");
+        rowsPrecipitacion.forEach(function(row) {
+            var real = parseFloat(row.children[1].innerText);
+            var meteosat = parseFloat(row.children[2].innerText);
+            var aemet = parseFloat(row.children[3].innerText);
+            var diferenciaMeteosat = meteosat - real;
+            var diferenciaAemet = aemet - real;
+            row.children[2].innerText += " (" + (diferenciaMeteosat > 0 ? "+" : "") + diferenciaMeteosat.toFixed(1) + ")";
+            row.children[3].innerText += " (" + (diferenciaAemet > 0 ? "+" : "") + diferenciaAemet.toFixed(1) + ")";
+
+            // Agregar clases según la diferencia
+            if (Math.abs(diferenciaMeteosat) <= 1) {
+                row.children[2].classList.add('acierto');
+            } else if (Math.abs(diferenciaMeteosat) <= 3) {
+                row.children[2].classList.add('diferencia-media');
+            } else {
+                row.children[2].classList.add('diferencia-alta');
+            }
+
+            if (Math.abs(diferenciaAemet) <= 1) {
+                row.children[3].classList.add('acierto');
+            } else if (Math.abs(diferenciaAemet) <= 3) {
+                row.children[3].classList.add('diferencia-media');
+            } else {
+                row.children[3].classList.add('diferencia-alta');
+            }
+        });
+    }
+    
+    // Llamar a la función cuando el documento esté listo
+    document.addEventListener("DOMContentLoaded", function() {
+        calcularDiferencia();
+    });
+</script>
+
+</body>
+</html>

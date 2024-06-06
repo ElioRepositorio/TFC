@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Visualización de Datos</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>Visualización de Datos</h1>
+    
+    <!-- Botones para alternar entre los gráficos -->
+    <div class="btn-group mb-3" role="group" aria-label="Basic example">
+        <button type="button" class="btn btn-primary" onclick="mostrarGrafico('temperatura')">Temperatura</button>
+        <button type="button" class="btn btn-secondary" onclick="mostrarGrafico('precipitacion')">Precipitaciones</button>
+    </div>
+
+    <!-- Gráfico de comparativa de temperatura -->
+    <canvas id="graficoTemperatura" style="display: none;"></canvas>
+    
+    <!-- Gráfico de comparativa de precipitación -->
+    <canvas id="graficoPrecipitacion" style="display: none;"></canvas>
+</div>
+
+<!-- Botón flotante para volver a index.html -->
+<a href="/" class="btn btn-primary btn-floating" style="position: fixed; left: 20px; top: 20px;">
+    Volver a Index
+</a>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- Importar la librería Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Script para alternar la visualización de los gráficos -->
+<script th:inline="javascript">
+    function mostrarGrafico(grafico) {
+        document.getElementById('graficoTemperatura').style.display = 'none';
+        document.getElementById('graficoPrecipitacion').style.display = 'none';
+
+        if (grafico === 'temperatura') {
+            document.getElementById('graficoTemperatura').style.display = 'block';
+        } else if (grafico === 'precipitacion') {
+            document.getElementById('graficoPrecipitacion').style.display = 'block';
+        }
+    }
+
+    // Inicialmente mostrar el gráfico de temperatura
+    mostrarGrafico('temperatura');
+</script>
+
+<!-- Script para generar el gráfico de temperatura -->
+<script th:inline="javascript">
+    var temperaturaComparativa = /*[[${temperaturaComparativa}]]*/ [];
+    var precipitacionComparativa = /*[[${precipitacionesComparativa}]]*/ [];
+
+    // Datos para el gráfico de temperatura
+    var temperaturaLabels = temperaturaComparativa.map(function(dato) { return dato[0]; });
+    var datosRealesAemet = temperaturaComparativa.map(function(dato) { return dato[1]; });
+    var datosPrevisionesMeteosat = temperaturaComparativa.map(function(dato) { return dato[2]; });
+    var datosPrevisionesAemet = temperaturaComparativa.map(function(dato) { return dato[3]; });
+
+    var temperaturaData = {
+        labels: temperaturaLabels,
+        datasets: [
+            {
+                label: 'Datos Reales (AEMET)',
+                data: datosRealesAemet,
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1,
+                fill: false
+            },
+            {
+                label: 'Previsiones (Meteosat)',
+                data: datosPrevisionesMeteosat,
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1,
+                fill: false
+            },
+            {
+                label: 'Previsiones (AEMET)',
+                data: datosPrevisionesAemet,
+                backgroundColor: 'rgba(255, 206, 86, 0.2)',
+                borderColor: 'rgba(255, 206, 86, 1)',
+                borderWidth: 1,
+                fill: false
+            }
+        ]
+    };
+
+    var ctx = document.getElementById('graficoTemperatura').getContext('2d');
+    var chartTemperatura = new Chart(ctx, {
+        type: 'line',
+        data: temperaturaData,
+        options: {
+            scales: {
+                x: {
+                    type: 'category',
+                    title: {
+                        display: true,
+                        text: 'Fecha y Hora'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Temperatura (°C)'
+                    }
+                }
+            }
+        }
+    });
+
+    // Datos para el gráfico de precipitación
+    var precipitacionLabels = precipitacionComparativa.map(function(dato) { return dato[0]; });
+    var datosRealesAemetPrecipitacion = precipitacionComparativa.map(function(dato) { return dato[1]; });
+    var datosPrevisionesMeteosatPrecipitacion = precipitacionComparativa.map(function(dato) { return dato[2]; });
+    var datosPrevisionesAemetPrecipitacion = precipitacionComparativa.map(function(dato) { return dato[3]; });
+
+    var precipitacionData = {
+        labels: precipitacionLabels,
+        datasets: [
+            {
+                label: 'Datos Reales (AEMET)',
+                data: datosRealesAemetPrecipitacion,
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1,
+                fill: false
+            },
+            {
+                label: 'Previsiones (Meteosat)',
+                data: datosPrevisionesMeteosatPrecipitacion,
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1,
+                fill: false
+            },
+            {
+                label: 'Previsiones (AEMET)',
+                data: datosPrevisionesAemetPrecipitacion,
+                backgroundColor: 'rgba(255, 206, 86, 0.2)',
+                borderColor: 'rgba(255, 206, 86, 1)',
+                borderWidth: 1,
+                fill: false
+            }
+        ]
+    };
+
+    var ctx2 = document.getElementById('graficoPrecipitacion').getContext('2d');
+    var chartPrecipitacion = new Chart(ctx2, {
+        type: 'line',
+        data: precipitacionData,
+        options: {
+            scales: {
+                x: {
+                    type: 'category',
+                    title: {
+                        display: true,
+                        text: 'Fecha y Hora'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Precipitación (mm)'
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
